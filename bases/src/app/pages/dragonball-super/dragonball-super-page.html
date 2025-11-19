@@ -1,0 +1,18 @@
+<div class="title-container">
+  <h1>Welcome the dragon ball series</h1>
+</div>
+<hr />
+<section class="row">
+  <div class="col-12 col-sm-6">
+      <dragonball-character-add
+        (newCharacter)="dragonBallService.addCharacter($event)"
+      />
+  </div>
+
+  <div class="col-12 col-sm-6">
+      <dragonball-character-list
+        [listName]="listName()"
+        [characters]="dragonBallService.characters()" />
+  </div>
+
+</section>
