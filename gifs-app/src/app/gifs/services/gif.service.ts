@@ -7,6 +7,8 @@ import { Gif } from '../interfaces/gif';
 import { GifMapper } from '../mapper/gif.mapper';
 import { map, Observable, tap } from 'rxjs';
 
+const GIFS_KEY = 'historyGifs';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -18,7 +20,7 @@ export class GifService {
   trendingGifs = signal<Gif[]>([])
   trendingGifsLoading = signal(true)
 
-  searchHistory = signal<Record<string, Gif[]>>(this.cacheService.loadValue('historyGifs', {}));
+  searchHistory = signal<Record<string, Gif[]>>(this.cacheService.loadValue(GIFS_KEY, {}));
   searchHistorykeys = computed( () => Object.keys(this.searchHistory()))
 
   constructor() {
@@ -27,9 +29,8 @@ export class GifService {
   }
 
   saveGifHistory = effect(() => {
-    this.cacheService.save('historyGifs', this.searchHistory());}
+    this.cacheService.save(GIFS_KEY, this.searchHistory());}
   );
-
 
   loadTrendingGifs() {
     this.http.get<GiphyResponse>(`${environment.giphyApiUrl}/gifs/trending`, {
