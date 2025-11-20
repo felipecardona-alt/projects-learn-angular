@@ -7,4 +7,4 @@ import { SideMenuOptions } from "./side-menu-options/side-menu-options";
   imports: [SideMenuHeader, SideMenuOptions],
   templateUrl: './side-menu.html',
 })
-export class SideMenu { }
+export class SideMenu {}
