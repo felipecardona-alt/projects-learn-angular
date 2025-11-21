@@ -1,29 +1,38 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { List } from "../../components/list/list";
+import { AfterViewInit, Component, ElementRef, inject, viewChild } from '@angular/core';
 import { GifService } from '../../services/gif.service';
+import { ScrollStateService } from 'src/app/shared/service/scroll-state.service';
 
-/* const imageUrls: string[] = [
-    "https://flowbite.s3.amazonaws.com/docs/gallery/square/image.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-5.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-6.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-7.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-8.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-9.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-10.jpg",
-    "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-11.jpg"
-];
- */
 @Component({
   selector: 'app-trending-page',
-  imports: [List],
   templateUrl: './trending-page.html'
 })
-export default class TrendingPage {
+export default class TrendingPage implements AfterViewInit{
 
-  gifService = inject(GifService)
+  gifService = inject(GifService);
+  scrollStateService = inject(ScrollStateService);
+
+  scrollDivRef = viewChild<ElementRef<HTMLDivElement>>('groupDiv');
+
+  ngAfterViewInit(): void {
+    const scrollDiv = this.scrollDivRef()?.nativeElement;
+    if (!scrollDiv) return;
+
+    scrollDiv.scrollTop = this.scrollStateService.getTrendingScrollState();
+  }
+
+  onScroll(event: Event) {
+    const scrollDiv = this.scrollDivRef()?.nativeElement;
+    if (!scrollDiv) return;
+
+    const scrollTop = scrollDiv.scrollTop; // Scroll que se ha recorrido desde arriba. entre mas aumenta mas he recorrido
+    const clientHeight = scrollDiv.clientHeight; // Punto de vista (no cambia aunque haga un refresh o cambia la pantalla )
+    const scrollHeight = scrollDiv.scrollHeight;  // Sscroll total que puedo hacer.
+    console.log({scrollTop , clientHeight , scrollHeight, scrollTotal: scrollTop + clientHeight})
+    const isAtBottom = scrollTop + clientHeight + 300 >= scrollHeight; // Para ver si ya llegue al final del contenido mostrable
+    this.scrollStateService.setTrendingScrollState(scrollTop);
+    if (isAtBottom) {
+      this.gifService.loadTrendingGifs();
+    }
+  }
 
 }
