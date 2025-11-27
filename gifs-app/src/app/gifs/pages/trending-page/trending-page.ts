@@ -26,7 +26,7 @@ export default class TrendingPage implements AfterViewInit{
 
     const scrollTop = scrollDiv.scrollTop; // Scroll que se ha recorrido desde arriba. entre mas aumenta mas he recorrido
     const clientHeight = scrollDiv.clientHeight; // Punto de vista (no cambia aunque haga un refresh o cambia la pantalla )
-    const scrollHeight = scrollDiv.scrollHeight;  // Sscroll total que puedo hacer.
+    const scrollHeight = scrollDiv.scrollHeight;  // Scroll total que puedo hacer.
     console.log({scrollTop , clientHeight , scrollHeight, scrollTotal: scrollTop + clientHeight})
     const isAtBottom = scrollTop + clientHeight + 300 >= scrollHeight; // Para ver si ya llegue al final del contenido mostrable
     this.scrollStateService.setTrendingScrollState(scrollTop);
