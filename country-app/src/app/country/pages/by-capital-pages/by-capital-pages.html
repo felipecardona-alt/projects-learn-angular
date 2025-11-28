@@ -2,4 +2,10 @@
   placeholder ="Buscar por capital de mi pais"
   (searchValue)="onSearch($event)" />
 
-<country-list [countries]="countries()"/>
+@if (isError()) {
+  <div class="alert mt-2">
+    {{ isError() }}
+  </div>
+} @else {
+  <country-list [countries]="countries()"/>
+}
