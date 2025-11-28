@@ -1,5 +1,11 @@
 <country-search-input
   placeholder ="Buscar por pais"
-  (searchValue)="($event)" />
+   (searchValue)="query.set($event)" />
 
-<country-list [countries]="countries()" />
+@if (countryResource.error()) {
+  <div class="alert mt-2">
+    {{ countryResource.error() }}
+  </div>
+} @else {
+  <country-list [countries]="countryResource.value()!"/>
+}

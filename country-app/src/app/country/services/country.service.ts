@@ -23,4 +23,17 @@ export class CountryServices {
       })
     );
   }
+
+  serchByCountry(country: string) {
+    country = country.trim().toLocaleLowerCase();
+
+    return this.http.get<RestCountry[]>(`${environment.apiBaseUrl}/name/${country}`)
+    .pipe(
+      map((countries ) => CountryMapper.mapRestCountriesToCountries(countries)),
+      catchError(error => {
+        console.error('Error fetching countries by name:', error);
+        return throwError(() => new Error(`No se pudo encontrar paises con el nombre ${country}`));
+      })
+    );
+  }
 }
