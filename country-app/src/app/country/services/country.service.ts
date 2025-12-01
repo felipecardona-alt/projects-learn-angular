@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environments';
 import { RestCountry } from '../interfaces/rest-countries';
-import { catchError, map, throwError } from 'rxjs';
+import { catchError, delay, map, throwError } from 'rxjs';
 import { CountryMapper } from '../mapper/country.mapper';
 
 @Injectable({
@@ -24,15 +24,29 @@ export class CountryServices {
     );
   }
 
-  serchByCountry(country: string) {
-    country = country.trim().toLocaleLowerCase();
+  searchByCountry(code: string) {
+    code = code.trim().toLocaleLowerCase();
 
-    return this.http.get<RestCountry[]>(`${environment.apiBaseUrl}/name/${country}`)
+    return this.http.get<RestCountry[]>(`${environment.apiBaseUrl}/name/${code}`)
     .pipe(
-      map((countries ) => CountryMapper.mapRestCountriesToCountries(countries)),
+      map((resp ) => CountryMapper.mapRestCountriesToCountries(resp)),
+      delay(1500),
       catchError(error => {
-        console.error('Error fetching countries by name:', error);
-        return throwError(() => new Error(`No se pudo encontrar paises con el nombre ${country}`));
+        console.error('Error fetching countries by alpha code:', error);
+        return throwError(() => new Error(`No se pudo encontrar detalles del pais con el codigo ${code}`));
+      })
+    );
+  }
+
+  searchByCountryByAlphaCode(code: string) {
+    return this.http.get<RestCountry[]>(`${environment.apiBaseUrl}/alpha/${code}`)
+    .pipe(
+      map((resp ) => CountryMapper.mapRestCountriesToCountries(resp)),
+      map(countries => countries.at(0)),
+
+      catchError(error => {
+        console.error('Error fetching countries by alpha code:', error);
+        return throwError(() => new Error(`No se pudo encontrar detalles del pais con el codigo ${code}`));
       })
     );
   }

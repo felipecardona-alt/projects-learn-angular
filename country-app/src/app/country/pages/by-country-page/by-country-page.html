@@ -2,10 +2,9 @@
   placeholder ="Buscar por pais"
    (searchValue)="query.set($event)" />
 
-@if (countryResource.error()) {
-  <div class="alert mt-2">
-    {{ countryResource.error() }}
-  </div>
-} @else {
-  <country-list [countries]="countryResource.value()!"/>
-}
+<country-list
+  [countries]="countryResource.value() ?? []"
+  [errorMessage]="countryResource.error()"
+  [isLoading]="countryResource.isLoading()"
+  [isEmpty]="countryResource.value()?.length === 0"
+/>
