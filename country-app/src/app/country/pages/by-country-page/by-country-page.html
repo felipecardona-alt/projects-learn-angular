@@ -4,7 +4,7 @@
 
 <country-list
   [countries]="countryResource.value() ?? []"
-  [errorMessage]="countryResource.error()"
+  [errorMessage]="countryResource.error()?.message ?? null"
   [isLoading]="countryResource.isLoading()"
   [isEmpty]="countryResource.value()?.length === 0"
 />
