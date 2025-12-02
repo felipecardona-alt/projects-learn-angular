@@ -35,22 +35,19 @@
       />
     </section>
 
-    <section>
-      <div class="stats shadow">
-        <div class="stat">
-          <div class="stat-figure text-secondary">
+    <section class="mt-2 flex justify-center">
+      <div class="stat">
+        <div class="stat-figure text-secondary">
+      </div>
+        <div class="stat-title">Region</div>
+        <div class="stat-value">{{ country().region }}</div>
+      </div>
 
-          </div>
-          <div class="stat-title">Region</div>
-          <div class="stat-value">{{ country().region }}</div>
-        </div>
-
-        <div class="stat">
-          <div class="stat-figure text-secondary">
-          </div>
-          <div class="stat-title">Subregion</div>
-          <div class="stat-value">{{ country().subregion }}</div>
-        </div>
+      <div class="stat">
+        <div class="stat-figure text-secondary">
+      </div>
+        <div class="stat-title">Subregion</div>
+        <div class="stat-value">{{ country().subregion }}</div>
       </div>
     </section>
 
