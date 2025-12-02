@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Country } from '../../interfaces/country';
@@ -10,12 +10,9 @@ import { Country } from '../../interfaces/country';
   templateUrl: './country-list.html',
 })
 export class CountryList {
-  @Input() countries: Country[] = [];
-  @Input() errorMessage: string | null = null;
-  @Input() isLoading: boolean = false;
-  @Input() isEmpty: boolean = false;
+  countries = input.required<Country[]>();
 
-  trackById(index: number, country: Country) {
-    return country.id;
-  }
+  errorMessage = input<string|unknown|null>();
+  isLoading = input<boolean>(false);
+  isEmpty = input<boolean>(false);
 }

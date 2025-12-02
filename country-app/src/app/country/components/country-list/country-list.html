@@ -3,45 +3,68 @@
     <thead>
       <tr>
         <th>#</th>
+        <th>Icono</th>
         <th>Bandera</th>
         <th>País</th>
         <th>Capital</th>
-        <th class="text-right">Población</th>
+        <th>Poblacion</th>
         <th></th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let country of countries; let i = index; trackBy: trackById">
-        <th>{{ i + 1 }}</th>
-        <td>
-          <img
-            [src]="country.flagsSvg"
-            [alt]="country.name"
-            class="h-8 w-12 object-cover rounded"
-          />
-        </td>
-        <td>
-          <div class="font-medium">{{ country.name }}</div>
-          <div class="text-sm text-muted">{{ country.flag }}</div>
-        </td>
-        <td>{{ country.capital }}</td>
-        <td class="text-right">{{ country.population | number }}</td>
-        <td>
-          <a [routerLink]="['/country', country.id]" class="link-primary">Más información</a>
-        </td>
-      </tr>
+        @for (country of countries(); track country.id; let index = $index) {
+          <tr>
+            <th>{{ index + 1 }}</th>
+            <td>{{ country.flag }}</td>
+            <td>
+              <img
+                [src]="country.flagsSvg"
+                [alt]="country.name"
+                class="h-10 rounded-md"
+              />
+            </td>
+            <td>{{ country.name }}</td>
+            <td>{{ country.capital }}</td>
+            <td>
+              <span class="badge badge-secondary">
+                {{ country.population | number }}
+              </span>
+            </td>
+            <td>
+              <a
+                [routerLink]="['/country/by', country.id]"
+                class="link-primary cursor-pointer"
+              >
+                Más información
+              </a>
+            </td>
+          </tr>
+        }
 
-      <tr *ngIf="!isLoading && countries.length === 0">
-        <td colspan="6" class="text-center py-6">No se encontraron países.</td>
-      </tr>
+        @if (errorMessage()) {
+          <tr>
+            <td colspan="8" class="text-center">
+              {{ errorMessage() }}
+            </td>
+          </tr>
+        }
+        <!-- No se encontraron países -->
+        @if (countries().length === 0 && !isLoading()) {
+          <tr>
+            <td colspan="8" class="text-center">
+              No se encontraron países.
+            </td>
+          </tr>
+        }
+        <!-- loading -->
+        @if (isLoading()) {
+          <tr>
+            <td colspan="8" class="text-center">
+              Buscando paises...
+            </td>
+          </tr>
+        }
 
-      <tr *ngIf="isLoading">
-        <td colspan="6" class="text-center py-6">Buscando países...</td>
-      </tr>
-
-      <tr *ngIf="errorMessage">
-        <td colspan="6" class="text-center text-error">{{ errorMessage }}</td>
-      </tr>
     </tbody>
   </table>
 </section>
