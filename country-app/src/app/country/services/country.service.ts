@@ -2,9 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environments';
 import { RestCountry } from '../interfaces/rest-countries';
-import { catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { CountryMapper } from '../mapper/country.mapper';
 import { Country } from '../interfaces/country';
+import { Region } from '../interfaces/region';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class CountryServices {
   private http = inject(HttpClient);
   private queryCacheByCapital = new Map<string, Country[]>();
   private queryCacheByCountry = new Map<string, Country[]>();
-  private queryCacheByRegion = new Map<string, Country[]>();
+  private queryCacheByRegion = new Map<Region, Country[]>();
 
   searchByCapital(capital: string): Observable<Country[]> {
     capital = capital.trim().toLocaleLowerCase();
@@ -46,7 +47,6 @@ export class CountryServices {
     .pipe(
       map((resp ) => CountryMapper.mapRestCountriesToCountries(resp)),
       tap( countries => this.queryCacheByCountry.set(code, countries)),
-      delay(1500),
       catchError(error => {
         console.error('Error fetching countries by alpha code:', error);
         return throwError(() => new Error(`No se pudo encontrar detalles del pais con el codigo ${code}`));
@@ -67,7 +67,7 @@ export class CountryServices {
     );
   }
 
-  searchByRegion(region: string): Observable<Country[]> {
+  searchByRegion(region: Region): Observable<Country[]> {
     return this.http.get<RestCountry[]>(`${environment.apiBaseUrl}/region/${region}`)
     .pipe(
       map((countries) => CountryMapper.mapRestCountriesToCountries(countries)),
