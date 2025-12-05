@@ -1,1 +1,15 @@
-<country-list [countries]="countries()" />
+@for (region of regions; track $index) {
+  <button
+    class="btn btn-soft m-2"
+    [class]="getButtonClass($index)"
+    (click)="query.set(region)">
+    {{ region }}
+  </button>
+}
+
+<country-list
+  [countries]="countryResource.value() ?? []"
+  [errorMessage]="countryResource.error()?.message ?? null"
+  [isLoading]="countryResource.isLoading()"
+  [isEmpty]="countryResource.value()?.length === 0"
+/>
