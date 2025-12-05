@@ -5,8 +5,8 @@
   />
 
 <country-list
-  [countries]="countryResource.value() ?? []"
-  [errorMessage]="countryResource.error()?.message ?? null"
+  [countries]="countryResource.hasValue() ? countryResource.value() : []"
   [isLoading]="countryResource.isLoading()"
-  [isEmpty]="countryResource.value()?.length === 0"
+  [errorMessage]="countryResource.error()?.message"
+  [isEmpty]="countryResource.hasValue() && countryResource.value().length === 0"
 />
