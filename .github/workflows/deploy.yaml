@@ -16,12 +16,16 @@ on:
   workflow_dispatch: {}
 
 jobs:
+  # Required for GITHUB_TOKEN to push to gh-pages
+  # Ensure repository Settings → Actions → Workflow permissions = Read and write
   build:
     runs-on: ubuntu-latest
-    steps:
+    deploy:
       - name: Checkout
         uses: actions/checkout@v4
 
+      permissions:
+        contents: write
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -33,6 +37,7 @@ jobs:
         run: |
           if [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ]; then
             npm ci
+            publish_branch: gh-pages
           else
             npm install --no-audit --no-fund
           fi
@@ -47,7 +52,7 @@ jobs:
         working-directory: pipes-app
 
       - name: Build
-        run: npm run build -- --configuration=production
+        run: npm run build -- --configuration=production --base-href=/projects-learn-angular/
         working-directory: pipes-app
 
       - name: Upload dist
@@ -65,11 +70,15 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: pipesapp-dist
+            - name: Prepare SPA 404
+              run: |
+                cp dist/pipes-app/browser/index.html dist/pipes-app/browser/404.html
+
           path: dist
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+                publish_dir: dist/pipes-app/browser
           publish_dir: dist
           force_orphan: true
