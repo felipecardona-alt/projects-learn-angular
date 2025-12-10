@@ -1,0 +1,75 @@
+name: PipesApp CI & Deploy
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+      - feature/*
+    paths:
+      - 'pipes-app/**'
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'pipes-app/**'
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: pipes-app/package-lock.json
+
+      - name: Install
+        run: |
+          if [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ]; then
+            npm ci
+          else
+            npm install --no-audit --no-fund
+          fi
+        working-directory: pipes-app
+
+      - name: Lint
+        run: npm run lint --if-present
+        working-directory: pipes-app
+
+      - name: Test
+        run: npm test -- --watch=false --browsers=ChromeHeadless || npm test -- --watch=false
+        working-directory: pipes-app
+
+      - name: Build
+        run: npm run build -- --configuration=production
+        working-directory: pipes-app
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipesapp-dist
+          path: pipes-app/dist/**
+  
+  deploy:
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: pipesapp-dist
+          path: dist
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist
+          force_orphan: true
