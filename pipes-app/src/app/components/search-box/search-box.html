@@ -1,0 +1,14 @@
+<div class="flex gap-2 items-center">
+  <input
+    type="text"
+    class="input input-bordered"
+    [placeholder]="placeholder()"
+    [(ngModel)]="value"
+  />
+
+  <custom-button
+    [label]="buttonLabel()"
+    [disabled]="false"
+    (pressed)="onSearch()"
+  ></custom-button>
+</div>
