@@ -1,0 +1,68 @@
+name: PipesApp CI & Deploy
+
+on:
+  push:
+    branches:
+      - master
+      - feature/*
+    paths:
+      - 'pipes-app/**'
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'pipes-app/**'
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci
+        working-directory: pipes-app
+
+      - name: Lint
+        run: npm run lint --if-present
+        working-directory: pipes-app
+
+      - name: Test
+        run: npm test -- --watch=false --browsers=ChromeHeadless || npm test -- --watch=false
+        working-directory: pipes-app
+
+      - name: Build
+        run: npm run build -- --configuration=production
+        working-directory: pipes-app
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipesapp-dist
+          path: pipes-app/dist/**
+  
+  deploy:
+    if: github.ref == 'refs/heads/master'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: pipesapp-dist
+          path: dist
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist
+          force_orphan: true
