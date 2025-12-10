@@ -16,12 +16,16 @@ on:
   workflow_dispatch: {}
 
 jobs:
+  # Required for GITHUB_TOKEN to push to gh-pages
+  # Ensure repository Settings → Actions → Workflow permissions = Read and write
   build:
     runs-on: ubuntu-latest
-    steps:
+    deploy:
       - name: Checkout
         uses: actions/checkout@v4
 
+      permissions:
+        contents: write
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -33,6 +37,7 @@ jobs:
         run: |
           if [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ]; then
             npm ci
+            publish_branch: gh-pages
           else
             npm install --no-audit --no-fund
           fi
