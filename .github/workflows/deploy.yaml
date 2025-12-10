@@ -52,7 +52,7 @@ jobs:
         working-directory: pipes-app
 
       - name: Build
-        run: npm run build -- --configuration=production
+        run: npm run build -- --configuration=production --base-href=/projects-learn-angular/
         working-directory: pipes-app
 
       - name: Upload dist
@@ -70,11 +70,15 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: pipesapp-dist
+            - name: Prepare SPA 404
+              run: |
+                cp dist/pipes-app/browser/index.html dist/pipes-app/browser/404.html
+
           path: dist
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+                publish_dir: dist/pipes-app/browser
           publish_dir: dist
           force_orphan: true
