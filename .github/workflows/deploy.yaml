@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - develop
       - feature/*
     paths:
       - 'pipes-app/**'
@@ -56,7 +57,7 @@ jobs:
           path: pipes-app/dist/**
   
   deploy:
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     needs: build
     runs-on: ubuntu-latest
     steps:
