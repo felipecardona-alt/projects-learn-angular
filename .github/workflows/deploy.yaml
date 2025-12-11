@@ -67,20 +67,16 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: pipesapp-dist
-            - name: Prepare SPA 404
-              run: |
-                cp dist/pipes-app/browser/index.html dist/pipes-app/browser/404.html
+          path: dist
 
-            path: dist
+      - name: Prepare SPA 404
+        run: |
+          cp dist/pipes-app/browser/index.html dist/pipes-app/browser/404.html
 
-        - name: Prepare SPA 404
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-                publish_dir: dist/pipes-app/browser
-        - name: Deploy to GitHub Pages
-          uses: peaceiris/actions-gh-pages@v4
-          with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
-            publish_branch: gh-pages
-            publish_dir: dist/pipes-app/browser
-            force_orphan: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: dist/pipes-app/browser
+          force_orphan: true
