@@ -5,7 +5,7 @@ on:
     branches:
       - master
       - develop
-      - feature/*
+      - 'feature/*'
     paths:
       - 'pipes-app/**'
   pull_request:
@@ -13,11 +13,9 @@ on:
       - master
     paths:
       - 'pipes-app/**'
-  workflow_dispatch: {}
+  workflow_dispatch:
 
 jobs:
-  # Required for GITHUB_TOKEN to push to gh-pages
-  # Ensure repository Settings → Actions → Workflow permissions = Read and write
   build:
     runs-on: ubuntu-latest
     deploy:
@@ -30,10 +28,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: npm
           cache-dependency-path: pipes-app/package-lock.json
 
       - name: Install
+        working-directory: pipes-app
         run: |
           if [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ]; then
             npm ci
@@ -41,30 +40,32 @@ jobs:
           else
             npm install --no-audit --no-fund
           fi
-        working-directory: pipes-app
 
       - name: Lint
-        run: npm run lint --if-present
         working-directory: pipes-app
+        run: npm run lint --if-present
 
       - name: Test
-        run: npm test -- --watch=false --browsers=ChromeHeadless || npm test -- --watch=false
         working-directory: pipes-app
+        run: npm test -- --watch=false --browsers=ChromeHeadless
 
       - name: Build
         run: npm run build -- --configuration=production --base-href=/projects-learn-angular/
         working-directory: pipes-app
+        run: npm run build -- --configuration=production --base-href=/projects-learn-angular/
 
       - name: Upload dist
         uses: actions/upload-artifact@v4
         with:
           name: pipesapp-dist
           path: pipes-app/dist/**
-  
+
   deploy:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop'
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Download dist
         uses: actions/download-artifact@v4
@@ -75,6 +76,10 @@ jobs:
                 cp dist/pipes-app/browser/index.html dist/pipes-app/browser/404.html
 
           path: dist
+
+      - name: Prepare SPA 404
+        run: |
+          cp dist/pipes-app/browser/index.html dist/pipes-app/browser/404.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
