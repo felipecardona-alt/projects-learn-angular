@@ -10,4 +10,14 @@
   <p>Saludos {{ client().name }}, es un placer {{ client().gender | i18nSelect: invitationMap}} a nuestro evento!</p>
   <button (click)="changeClient()" class="btn btn-primary">Cambiar cliente</button>
   </card-pipe>
+
+  <card-pipe
+    title="i18pluralPipe"
+  >
+  <p>Actualmente {{ clients().length | i18nPlural: clientsMap()}}</p>
+  <button
+    [disabled]="clients().length === 0"
+    (click)="deleteClient()"
+    class="btn btn-primary">Borrar cliente</button>
+  </card-pipe>
 </section>
