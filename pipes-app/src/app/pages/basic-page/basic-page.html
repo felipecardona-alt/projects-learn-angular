@@ -176,3 +176,24 @@
   </div>
 </div>
 </section>
+
+<div class="divider"></div>
+
+<section class="mx-5 my-5">
+  <div class="flex flex-row gap-2">
+    <h1 class="text-2xl font-bold">Locale Actual:
+      <span class="badge badge-secondary">{{currentLocale()}}</span>
+    </h1>
+
+    <button (click)="changeLocale('en')" class="btn btn-primary mx-2">
+      Cambiar a Inglés
+    </button>
+    <button (click)="changeLocale('fr')" class="btn btn-primary mx-2">
+      Cambiar a Frances
+    </button>
+    <button (click)="changeLocale('es')" class="btn btn-primary mx-2">
+      Cambiar a Español
+    </button>
+
+  </div>
+</section>
