@@ -18,13 +18,24 @@
 <div class="divider my-5"></div>
 
 <section class="my-2">
-  <h1 class="text-2xl font-bold">Pipes Personalizados en acción</h1>
+  <h1 class="text-2xl font-bold">Filtrando por: {{ searchQuery() || 'Ninguno' }} Ordenando Por {{sortBy() || 'Ninguno'}}</h1>
+
+  <div class="flex gap-2 justify-start w-full mt-2">
+    <input type="text"
+      placeholder="Buscar héroe"
+      class="input input-bordered w-full max-w-xs"
+      (input)="setSearchQuery(txtSearch.value)"
+      #txtSearch
+    />
+  </div>
+
+  <div class="flex flex-1"></div>
 
   <div class="flex gap-2 justify-end w-full">
-    <button class="btn btn-primary">Por nombre</button>
-    <button class="btn btn-primary">Por color</button>
-    <button class="btn btn-primary">Por volar</button>
-    <button class="btn btn-primary">Por creador</button>
+    <button class="btn btn-primary" (click)="setSortBy('name')">Por nombre</button>
+    <button class="btn btn-primary" (click)="setSortBy('color')">Por color</button>
+    <button class="btn btn-primary" (click)="setSortBy('canFly')">Por volar</button>
+    <button class="btn btn-primary" (click)="setSortBy('creator')">Por creador</button>
   </div>
 </section>
 
@@ -42,7 +53,7 @@
     </thead>
     <tbody>
     <!-- row -->
-      @for (hero of heroes(); track hero.id; let i = $index) {
+      @for (hero of heroes() | heroFilter:searchQuery() | heroBySort:sortBy(); track hero.id; let i = $index) {
       <tr>
         <td>{{ hero.id }}</td>
         <td>{{ hero.name | toggleCase: upperCase() }}</td>

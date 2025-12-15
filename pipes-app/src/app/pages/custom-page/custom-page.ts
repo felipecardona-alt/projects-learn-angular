@@ -7,11 +7,15 @@ import { HeroTextColorPipe } from '../../pipes/hero-text-color.pipe';
 import { TitleCasePipe } from '@angular/common';
 import { HeroCreadorPipe } from '../../pipes/hero-creator.pipe';
 import { HeroCreatorColorPipe } from '../../pipes/hero-creator-color.pipe';
+import { HeroBySortPipe } from '../../pipes/hero-by-sort.pipe';
+import { Hero } from '../../interfaces/hero';
+import { HeroFilterPipe } from '../../pipes/hero-filter.pipe';
 
 @Component({
   selector: 'custom-page',
   imports: [ToggleCasePipe, CanflyPipe, TitleCasePipe,
-            HeroColorPipe, HeroTextColorPipe, HeroCreadorPipe, HeroCreatorColorPipe],
+            HeroColorPipe, HeroTextColorPipe, HeroCreadorPipe,
+            HeroCreatorColorPipe, HeroBySortPipe, HeroFilterPipe],
   templateUrl: './custom-page.html',
 })
 export default class CustomPage {
@@ -22,13 +26,19 @@ export default class CustomPage {
 
   heroes = signal(heroes);
 
-  changeUpperCaseState() {
-    this.upperCase.update( current => !current );
+  sortBy = signal<keyof Hero | null>(null);
+  searchQuery = signal<string>('');
+
+  setSortBy( sortBy: keyof Hero ) {
+    this.sortBy.set( sortBy );
   }
 
-  formattedMap = {
-    'true': 'Cambiar a Lowercase',
-    'false': 'Cambiar a Uppercase'
+  setSearchQuery( query: string ) {
+    this.searchQuery.set( query );
+  }
+
+  changeUpperCaseState() {
+    this.upperCase.update( current => !current );
   }
 
 }
