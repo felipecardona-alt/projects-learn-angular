@@ -3,7 +3,7 @@
 
 <div class="row">
     <div class="col">
-        <form autocomplete="off" [formGroup]="myForm">
+        <form autocomplete="off" [formGroup]="myForm" (ngSubmit)="onSave()">
             <!-- Campo de producto -->
             <div class="mb-3 row">
                 <label class="col-sm-3 col-form-label">Producto</label>
@@ -14,11 +14,12 @@
                            placeholder="Nombre del producto"
                            formControlName="name"
                     />
-
+                  @if (isValidField('name')) {
                     <span class="form-text text-danger">
-                        <!-- Debe de ser de 3 letras -->
-                        error message
+                        {{getFieldError('name')}}
                     </span>
+                  }
+                  <!-- -->
                 </div>
             </div>
 
@@ -31,9 +32,11 @@
                            placeholder="Precio del producto"
                            formControlName="price"
                     />
+                  @if (isValidField('price')) {
                     <span class="form-text text-danger">
-                        El precio debe de ser 0 o mayor
+                        {{getFieldError('price')}}
                     </span>
+                  }
                 </div>
             </div>
 
@@ -47,31 +50,29 @@
                            formControlName="inStorage"
                     />
 
+                  @if (isValidField('inStorage')) {
                     <span class="form-text text-danger">
-                         Las existencias deben de ser 0 o mayor
+                        {{getFieldError('inStorage')}}
                     </span>
+                  }
                 </div>
             </div>
 
 
             <div class="row">
                 <div class="col">
-                    <button type="submit"
+                    <button (click)="onSave()"
+                            type="submit"
                             class="btn btn-primary float-end">
                         Guardar
                     </button>
                 </div>
             </div>
 
-
-
         </form>
 
     </div>
 </div>
-
-
-
 
 <div class="row">
     <div class="col">
@@ -88,10 +89,15 @@
         <span>Value</span>
         <pre>{{ myForm.value | json }}</pre>
 
+        <span>Errores</span>
+        <pre>Name: {{ myForm.controls['name'].errors| json }}</pre>
+        <pre>Price: {{ myForm.controls['price'].errors| json }}</pre>
+        <pre>In Storage: {{ myForm.controls['inStorage'].errors| json }}</pre>
+
         <span>Precio</span>
-        <pre>{{ myForm.controls.price.value | json }}</pre>
+        <pre>{{ myForm.controls['price'].value | json }}</pre>
 
         <span>Producto</span>
-        <pre>{{ myForm.controls.name.value | json }}</pre>
+        <pre>{{ myForm.controls['name'].value | json }}</pre>
     </div>
 </div>
