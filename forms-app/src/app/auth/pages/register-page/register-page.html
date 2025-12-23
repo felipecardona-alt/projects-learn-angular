@@ -34,6 +34,7 @@
                     <custom-field-error
                       [fieldName]="'email'"
                       [myForm]="myForm"
+                      [messages]="{ pattern: 'El formato ingresado no es válido', emailTaken: 'El correo ya está en uso' }"
                     />
                 </div>
             </div>
@@ -50,7 +51,8 @@
                     <custom-field-error
                       [fieldName]="'username'"
                       [myForm]="myForm"
-                      [messages]="{pattern: 'El nombre de usuario no puede tener espacios'}"
+                      [messages]="{ notStrider: 'El nombre de usuario no puede ser Strider',
+                                    pattern: 'El nombre de usuario no puede tener espacios'}"
                     />
                 </div>
             </div>
@@ -91,6 +93,12 @@
 
             <div class="row">
                 <div class="col">
+
+                  @if (myForm.errors && myForm.touched) {
+                    <span class="form-text text-danger">
+                      Las contraseñas no coinciden
+                    </span>
+                  }
                     <button class="btn btn-primary float-end"
                             type="submit"
                             (click)="onSave()">

@@ -1,11 +1,18 @@
-import { FormArray, FormGroup, ValidationErrors } from "@angular/forms";
+import { AbstractControl, FormArray, FormGroup, ValidationErrors } from "@angular/forms";
 
 type ValidationMessageMap = Partial<Record<string, string>>;
+
+async function sleep(ms: number) {
+  return new Promise( resolve => {
+    setTimeout(() => {
+      resolve(true)
+    }, ms);
+  });
+}
 
 export class FormUtils {
 
   private constructor() {}
-
   static isValidField(field: string, myForm: FormGroup): boolean | null {
     const control = myForm.get(field);
     if (!control) return false;
@@ -55,12 +62,34 @@ export class FormUtils {
     return this.getTextError(errors);
   }
 
-  static onSave(myForm: FormGroup) {
-    if (myForm.invalid) {
-      myForm.markAllAsTouched();
-      return;
+  static isFieldOneEqualFieldTwo(fieldOne: string, fieldTwo: string) {
+    return (formGroup: AbstractControl) => {
+      const fieldValue = formGroup.get(fieldOne)?.value;
+      const fieldTwoValue = formGroup.get(fieldTwo)?.value;
+
+      return fieldValue === fieldTwoValue ? null : { fieldsNotEquals: true };
     }
-    myForm.reset();
+  }
+
+  static async checkingServerResponse(control: AbstractControl): Promise<ValidationErrors | null> {
+    console.log('Checking server response...');
+    await sleep(1500); // Simula el tiempo de respuesta del servidor 1.5s
+
+    const formValue = control.value;
+
+    if (formValue === 'hola@mundo.com') {
+      return { emailTaken: true };
+    }
+
+    return null;
+  }
+
+  static notStrider(control: AbstractControl): ValidationErrors | null {
+    const formValue = control.value;
+    if (formValue === 'strider') {
+      return { notStrider: true };
+    }
+    return null;
   }
 
 }
