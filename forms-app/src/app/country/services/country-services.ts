@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { regions } from '../interfaces/region-data';
-import { Observable, of } from 'rxjs';
+import { combineLatest, Observable, of } from 'rxjs';
 import { Country } from '../interfaces/country';
 import { environment } from '../../environments/environment';
 
@@ -30,18 +30,16 @@ export class CountryServices {
     return this.httpClient.get<Country>(url);
   }
 
-  getCountryBorderByCodes (borders: string[]): Observable<Country[]> {
+  getCountryByBorderNames(borders: string[]): Observable<Country[]> {
     if ( !borders || borders.length === 0) return of([]);
 
-    // TODO
-    return of(borders.map(code => {
-      return {
-        cca3: code,
-        name: { common: '', official: '', nativeName: {} },
-        borders: []
-      };
-    }));
+    const countriesRequests: Observable<Country>[] = [];
 
+    borders.forEach((code) => {
+      const request = this.getCountryByAlphaCode(code);
+      countriesRequests.push(request);
+    });
 
+    return combineLatest(countriesRequests);
   }
 }
