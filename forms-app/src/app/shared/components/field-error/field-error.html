@@ -1,0 +1,5 @@
+@if (formUtils.isValidField(fieldName(), myForm())) {
+  <span class="form-text text-danger">
+      {{ formUtils.getFieldError(fieldName(), myForm(), messages() ?? undefined) }}
+  </span>
+}
