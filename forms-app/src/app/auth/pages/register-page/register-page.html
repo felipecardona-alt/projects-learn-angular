@@ -3,9 +3,7 @@
 
 <div class="row">
     <div class="col">
-
         <form autocomplete="off" [formGroup]="myForm" (ngSubmit)="onSave()">
-
             <!-- Nombre -->
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Nombre y apellido</label>
@@ -15,10 +13,11 @@
                            placeholder="Nombre del usuario"
                            formControlName="name"
                     />
-
-                    <span class="form-text text-danger">
-                        Debe de ser en formato de nombre y apellido
-                    </span>
+                    <custom-field-error
+                      [fieldName]="'name'"
+                      [myForm]="myForm"
+                      [messages]="{ pattern: 'Ingresa nombre y apellido (solo letras)' }"
+                    />
                 </div>
             </div>
 
@@ -30,12 +29,12 @@
                            class="form-control"
                            placeholder="Email del usuario"
                            formControlName="email"
+
                     />
-                    @if(formUtils.isValidField('email', myForm)) {
-                      <span class="form-text text-danger">
-                          {{ formUtils.getFieldError('email', myForm) }}
-                      </span>
-                    }
+                    <custom-field-error
+                      [fieldName]="'email'"
+                      [myForm]="myForm"
+                    />
                 </div>
             </div>
 
@@ -48,9 +47,11 @@
                            placeholder="Nombre código del usuario"
                            formControlName="username"
                     />
-                    <span class="form-text text-danger">
-                         El username no puede ser Strider
-                    </span>
+                    <custom-field-error
+                      [fieldName]="'username'"
+                      [myForm]="myForm"
+                      [messages]="{pattern: 'El nombre de usuario no puede tener espacios'}"
+                    />
                 </div>
             </div>
 
@@ -63,14 +64,15 @@
                            placeholder="Password de su cuenta"
                            formControlName="password"
                     />
-
-                    <span class="form-text text-danger">
-                         La contraseña debe de ser mayor de 6 caracteres.
-                    </span>
+                    <custom-field-error
+                      [fieldName]="'password'"
+                      [myForm]="myForm"
+                      [messages]="{ pattern: 'Debe incluir mayúscula, minúscula, número y símbolo', minlength: 'Mínimo 8 caracteres' }"
+                    />
                 </div>
             </div>
 
-            <!-- Password2 -->
+            <!-- Password2 o ConfirmarPassword -->
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Confirmar</label>
                 <div class="col-sm-9">
@@ -79,10 +81,10 @@
                            placeholder="Confirmar la contraseña"
                            formControlName="confirmPassword"
                     />
-
-                    <span class="form-text text-danger">
-                         Las contraseñas deben de ser iguales
-                    </span>
+                    <custom-field-error
+                      [fieldName]="'confirmPassword'"
+                      [myForm]="myForm"
+                    />
                 </div>
             </div>
 
@@ -104,13 +106,15 @@
 
 
 <h2>Form Valid: </h2>
-<pre>{{ myForm.valid | json }}</pre>
+<pre>{{ myForm.valid }}</pre>
 <h2>Form Status: </h2>
-<pre>{{ myForm.status | json }}</pre>
+<pre>{{ myForm.status }}</pre>
 <h2>Form Pending: </h2>
-<pre>{{ myForm.pending | json }}</pre>
+<pre>{{ myForm.pending }}</pre>
+<h2>Form value</h2>
+<pre>{{ myForm.value | json }}</pre>
 <h2>Form errors</h2>
-<pre>{{ myForm.value| json }}</pre>
+<pre>{{ myForm.errors | json }}</pre>
 
 <h5>Nombre</h5>
 <pre>{{ myForm.controls['name'].errors | json }}</pre>

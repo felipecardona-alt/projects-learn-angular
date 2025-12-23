@@ -1,11 +1,15 @@
 import { FormArray, FormGroup, ValidationErrors } from "@angular/forms";
 
+type ValidationMessageMap = Partial<Record<string, string>>;
+
 export class FormUtils {
 
   private constructor() {}
 
   static isValidField(field: string, myForm: FormGroup): boolean | null {
-    return !! myForm.controls[field].errors && myForm.controls[field].touched;
+    const control = myForm.get(field);
+    if (!control) return false;
+    return !!control.errors && control.touched;
   };
 
   static isValidFieldInArray(formArray: FormArray, index: number): boolean | null {
@@ -14,8 +18,10 @@ export class FormUtils {
     );
   };
 
-  private static getTextError(errors: ValidationErrors): string | null {
+  private static getTextError(errors: ValidationErrors, messages?: ValidationMessageMap): string | null {
     for (const key of Object.keys(errors)) {
+      if (messages?.[key]) return messages[key]!;
+
       switch (key) {
         case 'required':
           return 'Este campo es obligatorio';
@@ -25,17 +31,20 @@ export class FormUtils {
           return `El valor mínimo es ${errors['min'].min}`;
         case 'email':
           return 'El valor ingresado no es un correo válido';
+        case 'pattern':
+          return 'El formato ingresado no es válido';
       }
     }
     return null;
   };
 
-  static getFieldError(field: string, myForm: FormGroup): string | null {
-    if (!myForm.controls[field]) return null;
+  static getFieldError(field: string, myForm: FormGroup, messages?: ValidationMessageMap): string | null {
+    const control = myForm.get(field);
+    if (!control) return null;
 
-    const errors = myForm.controls[field].errors ?? {};
+    const errors = control.errors ?? {};
 
-    return this.getTextError(errors);
+    return this.getTextError(errors, messages);
   };
 
   static getFieldErrorInArray(formArray: FormArray, index: number): string | null {
