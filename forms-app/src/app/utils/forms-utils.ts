@@ -23,6 +23,8 @@ export class FormUtils {
           return `Mínimo ${errors['minlength'].requiredLength} caracteres`;
         case 'min':
           return `El valor mínimo es ${errors['min'].min}`;
+        case 'email':
+          return 'El valor ingresado no es un correo válido';
       }
     }
     return null;
