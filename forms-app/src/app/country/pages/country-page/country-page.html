@@ -12,7 +12,7 @@
         @for (region of regions(); track region) {
           <option [value]="region">
             {{ region }}
-          </option> -->
+          </option>
         }
 
       </select>
@@ -27,9 +27,11 @@
       <select formControlName="country" class="form-select">
         <option value="">-- Seleccione País --</option>
 
-        <!-- <option [value]="country.cca3">
-          {{ country.name }}
-        </option> -->
+        @for (country of countryByRegions(); track country.cca3) {
+          <option [value]="country.cca3">
+            {{ country.name.common }}
+          </option>
+        }
 
       </select>
     </div>
