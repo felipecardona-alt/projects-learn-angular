@@ -1,4 +1,5 @@
 import { afterEveryRender, afterNextRender, Component, effect, OnChanges, OnDestroy, OnInit, signal } from '@angular/core';
+import { Title } from "../../component/title/title";
 
 const log = (...messages:string[]) => {
   console.log(`${messages[0] } %c${messages.slice(1).join(' ')}`, 'color: #17cf30ff; font-weight: bold;');
@@ -6,7 +7,7 @@ const log = (...messages:string[]) => {
 
 @Component({
   selector: 'home-page',
-  imports: [],
+  imports: [Title],
   templateUrl: './home-page.html',
   styleUrl: './home-page.css',
 })
@@ -27,11 +28,11 @@ export class HomePage implements OnInit, OnChanges, OnDestroy{
   constructor() {
     console.log('Constructor  llamado');
 
-    setTimeout(() => {
+/*     setTimeout(() => {
       this.changeSignal();
-      // this.changeTraditional();
+      this.changeTraditional();
       console.log('Traditional property changed hecho');
-    }, 1000);
+    }, 1000); */
   }
 
   basicEffect = effect((onCleanup) => {
